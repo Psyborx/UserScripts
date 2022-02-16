@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.0
+// @version      1.1
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -18,18 +18,25 @@
       width: 100%;
     }
     .customTabs {
-      height: auto !important;
       width: 100%;
       display: grid !important;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       border-bottom: 1px solid rgba(75,80,83);
       margin-bottom: 10px;
     }
+    .customTabsC {
+      height: 36px !important;
+      overflow: hidden;
+    }
+    .customTabsU {
+      height: auto !important;
+    }
     .customTabsNo {
       display: none !important;
     }
     .customTab {
       padding: 10px;
+      min-height: 16px;
     }
     .ctSelected {
       padding-bottom: 7px;
@@ -44,7 +51,23 @@
       height: 100%;
       color: rgba(255,255,255,0.70);
       text-decoration: none;
-    }`;
+    }
+    .collapseBtn {
+      z-index: 99;
+      margin-right: 10px;
+    }
+    .collapseBtnBg {
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 20px;
+    }
+    .collapseBtnBgC {
+      background-image: url('https://www.gstatic.com/images/icons/material/system_gm/1x/keyboard_arrow_down_white_20dp.png');
+    }
+    .collapseBtnBgU {
+      background-image: url('https://www.gstatic.com/images/icons/material/system_gm/1x/keyboard_arrow_up_white_20dp.png');
+    }
+    `;
   document.head.insertAdjacentHTML('beforeend', `<style>${stylesheet}</style>`);
 
   const gmtt = {
@@ -54,13 +77,10 @@
     baseUrl: null,
     customTabBar: null,
     selected: null,
+    collapsed: true,
     tabsConfig: [{ //Tabs configuration object
-      id: 'inbox',
-      query: 'inbox',
-      label: 'Inbox'
-    }, {
       id: 'impunread',
-      query: 'is:(important unread)',
+      query: 'in:inbox is:(important unread)',
       label: 'Important & Unread'
     }, {
       id: 'pinned',
@@ -216,7 +236,7 @@
           } else {
             gmtt.customTabBar = document.createElement('div');
             gmtt.customTabBar.id = 'customTabBar';
-            gmtt.customTabBar.className = 'aKh aKx customTabs';
+            gmtt.customTabBar.className = 'aKh aKx customTabs customTabsC';
             const fragment = document.createDocumentFragment();
             gmtt.tabsConfig.forEach(tabCfg => {
               const tab = document.createElement('div');
@@ -249,6 +269,28 @@
             const container = document.createElement('div');
             container.id = 'customTabsContainer'
             container.appendChild(gmtt.customTabBar);
+
+            const collapseBtn = document.createElement('div');
+            collapseBtn.className = 'Ij Yn collapseBtn';
+            const collapseBtnBg = document.createElement('span');
+            collapseBtnBg.className = 'Ik collapseBtnBg collapseBtnBgC';
+            collapseBtn.addEventListener('click', () => {
+              if(gmtt.collapsed) {
+                collapseBtnBg.classList.remove('collapseBtnBgC');
+                collapseBtnBg.classList.add('collapseBtnBgU');
+                gmtt.customTabBar.classList.remove('customTabsC');
+                gmtt.customTabBar.classList.add('customTabsU');
+              } else {
+                collapseBtnBg.classList.remove('collapseBtnBgU');
+                collapseBtnBg.classList.add('collapseBtnBgC');
+                gmtt.customTabBar.classList.remove('customTabsU');
+                gmtt.customTabBar.classList.add('customTabsC');
+              }
+              gmtt.collapsed = !gmtt.collapsed;
+            });
+            collapseBtn.appendChild(collapseBtnBg);
+            container.appendChild(collapseBtn);
+
             tabParent.prepend(container);
           }
         }
