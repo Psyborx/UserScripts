@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.1
+// @version      1.2
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -11,11 +11,13 @@
 // ==/UserScript==
 
 (function() {
-
   const stylesheet = `
     #customTabsContainer {
       display: inline-block;
       width: 100%;
+    }
+    .displayNone {
+      display: none !important;
     }
     .customTabs {
       width: 100%;
@@ -30,9 +32,6 @@
     }
     .customTabsU {
       height: auto !important;
-    }
-    .customTabsNo {
-      display: none !important;
     }
     .customTab {
       padding: 10px;
@@ -75,11 +74,12 @@
     maxWait: 15000,
     totalWait: 0,
     baseUrl: null,
+    customTabsContainer: null,
     customTabBar: null,
     selected: null,
     collapsed: true,
     tabsConfig: [{ //Tabs configuration object
-      id: 'impunread',
+      id: 'impUnread',
       query: 'in:inbox is:(important unread)',
       label: 'Important & Unread'
     }, {
@@ -123,10 +123,6 @@
       query: 'in:inbox label:shipping',
       label: 'Shipping'
     }, {
-      id: 'social',
-      query: 'in:inbox category:social',
-      label: 'Social'
-    }, {
       id: 'recruitment',
       query: 'in:inbox label:recruitment',
       label: 'Recruitment'
@@ -139,6 +135,10 @@
       query: 'in:inbox label:network-alerts',
       label: 'Network'
     }, {
+      id: 'social',
+      query: 'in:inbox category:social',
+      label: 'Social'
+    }, {
       id: 'forums',
       query: 'in:inbox category:forums',
       label: 'Forums'
@@ -150,6 +150,14 @@
       id: 'attachment',
       query: 'attach_or_drive=true',
       label: 'Attachment'
+    }, {
+      id: 'recentCalls',
+      query: 'label:(-phone phone-call-log)',
+      label: 'Recent Calls'
+    }, {
+      id: 'recentSms',
+      query: 'label:(-im -phone {phone-sms phone-mms})',
+      label: 'Recent SMS'
     }, {
       id: 'documents',
       query: '{from:docusign.net "docs.google.com" has:document has:pdf filename:{doc docx odt fodt pages pages-tef xls xlsx ods fods numbers numbers-tef ppt pptx pps ppsx odp fodp key keynote key-tef pdf ps}}',
@@ -214,15 +222,15 @@
         //console.log("*************** Tab Parent found");
         gmtt.totalWait = 0;
         if (!display) {
-          if (gmtt.customTabBar && !gmtt.customTabBar.classList.contains('customTabsNo')) {
-            gmtt.customTabBar.classList.add('customTabsNo');
+          if (gmtt.customTabsContainer && !gmtt.customTabsContainer.classList.contains('displayNone')) {
+            gmtt.customTabsContainer.classList.add('displayNone');
           }
         } else {
-          if (gmtt.customTabBar) {
-            if (gmtt.customTabBar.classList.contains('customTabsNo')) {
-              gmtt.customTabBar.classList.remove('customTabsNo');
+          if (gmtt.customTabsContainer) {
+            if (gmtt.customTabsContainer.classList.contains('displayNone')) {
+              gmtt.customTabsContainer.classList.remove('displayNone');
             }
-            gmtt.customTabBar.querySelectorAll('.customTab').forEach(customTab => {
+            gmtt.customTabsContainer.querySelectorAll('.customTab').forEach(customTab => {
               if (gmtt.selected && customTab.id == `ct-${gmtt.selected}`) {
                 if (!customTab.classList.contains('ctSelected')) {
                   customTab.classList.add('ctSelected');
@@ -265,10 +273,10 @@
 
             window.addEventListener('hashchange', gmtt.init);
           }
-          if (!tabParent.querySelector('.customTabs')) {
-            const container = document.createElement('div');
-            container.id = 'customTabsContainer'
-            container.appendChild(gmtt.customTabBar);
+          if (!gmtt.customTabsContainer) {
+            gmtt.customTabsContainer = document.createElement('div');
+            gmtt.customTabsContainer.id = 'customTabsContainer'
+            gmtt.customTabsContainer.appendChild(gmtt.customTabBar);
 
             const collapseBtn = document.createElement('div');
             collapseBtn.className = 'Ij Yn collapseBtn';
@@ -289,9 +297,9 @@
               gmtt.collapsed = !gmtt.collapsed;
             });
             collapseBtn.appendChild(collapseBtnBg);
-            container.appendChild(collapseBtn);
+            gmtt.customTabsContainer.appendChild(collapseBtn);
 
-            tabParent.prepend(container);
+            tabParent.prepend(gmtt.customTabsContainer);
           }
         }
       } else if (gmtt.totalWait < gmtt.maxWait) {
