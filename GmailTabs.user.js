@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.2
+// @version      1.3
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -156,7 +156,7 @@
       label: 'Recent Calls'
     }, {
       id: 'recentSms',
-      query: 'label:(-im -phone {phone-sms phone-mms})',
+      query: 'label:({-im -phone} {phone-sms phone-mms})',
       label: 'Recent SMS'
     }, {
       id: 'documents',
@@ -173,6 +173,10 @@
     }],
     shouldDisplay: (hash, numSegments) => {
       return hash.length == numSegments || (hash.length == numSegments + 1 && /p\d+/.test(hash[hash.length - 1]));
+    },
+    updateHeight: () => {
+      const customTabsContainerHeight = getComputedStyle(document.getElementById('customTabsContainer')).height;
+      document.querySelectorAll('.S4').forEach(el => el.style.height = `calc(100vh - 64px - 16px - ${customTabsContainerHeight})`);
     },
     init: () => {
       gmtt.totalWait += gmtt.intWait;
@@ -295,6 +299,7 @@
                 gmtt.customTabBar.classList.add('customTabsC');
               }
               gmtt.collapsed = !gmtt.collapsed;
+              gmtt.updateHeight();
             });
             collapseBtn.appendChild(collapseBtnBg);
             gmtt.customTabsContainer.appendChild(collapseBtn);
@@ -302,6 +307,7 @@
             tabParent.prepend(gmtt.customTabsContainer);
           }
         }
+        gmtt.updateHeight();
       } else if (gmtt.totalWait < gmtt.maxWait) {
         //console.warn("*************** Tab Parent not found yet");
         window.setTimeout(gmtt.init, gmtt.intWait);
