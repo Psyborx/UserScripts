@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.3
+// @version      1.4
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -52,8 +52,9 @@
       text-decoration: none;
     }
     .collapseBtn {
-      z-index: 99;
+      z-index: 5;
       margin-right: 10px;
+      margin-top: 5px;
     }
     .collapseBtnBg {
       background-position: center;
@@ -78,6 +79,7 @@
     customTabBar: null,
     selected: null,
     collapsed: true,
+    resizeTimeout: false,
     tabsConfig: [{ //Tabs configuration object
       id: 'impUnread',
       query: 'in:inbox is:(important unread)',
@@ -147,10 +149,6 @@
       query: 'in:inbox category:promotions',
       label: 'Promotions'
     }, {
-      id: 'attachment',
-      query: 'attach_or_drive=true',
-      label: 'Attachment'
-    }, {
       id: 'recentCalls',
       query: 'label:(-phone phone-call-log)',
       label: 'Recent Calls'
@@ -158,6 +156,10 @@
       id: 'recentSms',
       query: 'label:({-im -phone} {phone-sms phone-mms})',
       label: 'Recent SMS'
+    }, {
+      id: 'attachment',
+      query: 'attach_or_drive=true',
+      label: 'Attachment'
     }, {
       id: 'documents',
       query: '{from:docusign.net "docs.google.com" has:document has:pdf filename:{doc docx odt fodt pages pages-tef xls xlsx ods fods numbers numbers-tef ppt pptx pps ppsx odp fodp key keynote key-tef pdf ps}}',
@@ -276,6 +278,10 @@
             gmtt.customTabBar.appendChild(fragment);
 
             window.addEventListener('hashchange', gmtt.init);
+            window.addEventListener('resize', () => {
+              clearTimeout(gmtt.resizeTimeout);
+              gmtt.resizeTimeout = setTimeout(gmtt.updateHeight, 250);
+            });
           }
           if (!gmtt.customTabsContainer) {
             gmtt.customTabsContainer = document.createElement('div');
