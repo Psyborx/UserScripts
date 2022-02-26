@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.4
+// @version      1.5
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -30,7 +30,7 @@
       height: 36px !important;
       overflow: hidden;
     }
-    .customTabsU {
+    .customTabsE {
       height: auto !important;
     }
     .customTab {
@@ -45,11 +45,18 @@
       background-color: rgba(84,89,91);
     }
     .customTab > a {
-      display: block;
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      grid-gap: 10px;
       width: 100%;
       height: 100%;
       color: rgba(255,255,255,0.70);
       text-decoration: none;
+    }
+    .customTabIcon {
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 20px;
     }
     .collapseBtn {
       z-index: 5;
@@ -64,7 +71,7 @@
     .collapseBtnBgC {
       background-image: url('https://www.gstatic.com/images/icons/material/system_gm/1x/keyboard_arrow_down_white_20dp.png');
     }
-    .collapseBtnBgU {
+    .collapseBtnBgE {
       background-image: url('https://www.gstatic.com/images/icons/material/system_gm/1x/keyboard_arrow_up_white_20dp.png');
     }
     `;
@@ -81,104 +88,112 @@
     collapsed: true,
     resizeTimeout: false,
     tabsConfig: [{ //Tabs configuration object
-      id: 'impUnread',
-      query: 'in:inbox is:(important unread)',
-      label: 'Important & Unread'
-    }, {
-      id: 'pinned',
-      query: 'label/Pinned',
-      label: 'Pinned'
-    }, {
-      id: 'unpinned',
-      query: 'in:inbox -label:pinned',
-      label: 'Unpinned'
-    }, {
-      id: 'clean',
-      query: 'in:inbox {label:pinned (-category:{promotions social forums} -label:{apartment shopping shipping finances recruitment patreon})}',
-      label: 'Clean'
-    }, {
       id: 'starred',
-      query: 'starred',
-      label: 'Starred'
+      query: 'in:inbox is:starred',
+      label: 'Starred',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/star_white_20dp.png'
+    }, {
+      id: 'regular',
+      query: 'in:inbox -is:starred',
+      label: 'Regular Inbox',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/all_inbox_white_20dp.png'
     }, {
       id: 'security',
       query: 'in:inbox label:security',
-      label: 'Security'
+      label: 'Security',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/security_white_20dp.png'
     }, {
       id: 'alerts',
       query: 'in:inbox label:alerts',
-      label: 'Alerts'
+      label: 'Alerts',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/warning_amber_white_20dp.png'
     }, {
       id: 'apartment',
       query: 'in:inbox label:apartment',
-      label: 'Apartment'
+      label: 'Apartment',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/apartment_white_20dp.png'
     }, {
       id: 'finances',
       query: 'in:inbox label:finances',
-      label: 'Finances'
+      label: 'Finances',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/account_balance_white_20dp.png'
     }, {
       id: 'shopping',
       query: 'in:inbox label:shopping',
-      label: 'Shopping'
+      label: 'Shopping',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/shopping_cart_white_20dp.png'
     }, {
       id: 'shipping',
       query: 'in:inbox label:shipping',
-      label: 'Shipping'
+      label: 'Shipping',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/local_shipping_white_20dp.png'
     }, {
       id: 'recruitment',
       query: 'in:inbox label:recruitment',
-      label: 'Recruitment'
+      label: 'Recruitment',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/work_white_20dp.png'
     }, {
       id: 'patreon',
       query: 'in:inbox label:patreon',
-      label: 'Patreon'
+      label: 'Patreon',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/toll_white_20dp.png'
     }, {
-      id: 'network',
+      id: 'networkAlerts',
       query: 'in:inbox label:network-alerts',
-      label: 'Network'
+      label: 'Network Alerts',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/lan_white_20dp.png'
     }, {
       id: 'social',
       query: 'in:inbox category:social',
-      label: 'Social'
+      label: 'Social',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/people_white_20dp.png'
     }, {
       id: 'forums',
       query: 'in:inbox category:forums',
-      label: 'Forums'
+      label: 'Forums',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/forum_white_20dp.png'
     }, {
       id: 'promotions',
       query: 'in:inbox category:promotions',
-      label: 'Promotions'
+      label: 'Promotions',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/local_offer_white_20dp.png'
     }, {
       id: 'recentCalls',
       query: 'label:(-phone phone-call-log)',
-      label: 'Recent Calls'
+      label: 'Recent Calls',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/phone_in_talk_white_20dp.png'
     }, {
       id: 'recentSms',
       query: 'label:({-im -phone} {phone-sms phone-mms})',
-      label: 'Recent SMS'
+      label: 'Recent SMS',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/sms_white_20dp.png'
     }, {
       id: 'attachment',
       query: 'attach_or_drive=true',
-      label: 'Attachment'
+      label: 'Attachment',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/attachment_white_20dp.png'
     }, {
       id: 'documents',
       query: '{from:docusign.net "docs.google.com" has:document has:pdf filename:{doc docx odt fodt pages pages-tef xls xlsx ods fods numbers numbers-tef ppt pptx pps ppsx odp fodp key keynote key-tef pdf ps}}',
-      label: 'Documents'
+      label: 'Documents',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/description_white_20dp.png'
     }, {
-      id: 'pictures',
+      id: 'images',
       query: '{has:image filename:{bmp png jpg jpeg jp2 gif webp apng avif tiff emf wmf ai svg xcf psd heic raw dng arw}}',
-      label: 'Pictures'
+      label: 'Images',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/image_white_20dp.png'
     }, {
       id: 'videos',
       query: '{has:video filename:{avi mov qt mpg mpeg mp4 m4p m4v mkv webm flv vob ogv ogg wmv rm rmvb asf 3gp mts m2ts ts}}',
-      label: 'Videos'
+      label: 'Videos',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/ondemand_video_white_20dp.png'
     }],
     shouldDisplay: (hash, numSegments) => {
       return hash.length == numSegments || (hash.length == numSegments + 1 && /p\d+/.test(hash[hash.length - 1]));
     },
     updateHeight: () => {
       const customTabsContainerHeight = getComputedStyle(document.getElementById('customTabsContainer')).height;
-      document.querySelectorAll('.S4').forEach(el => el.style.height = `calc(100vh - 64px - 16px - ${customTabsContainerHeight})`);
+      document.querySelectorAll('.S4').forEach(el => { el.style.height = `calc(100vh - 64px - 16px - ${customTabsContainerHeight})` });
     },
     init: () => {
       gmtt.totalWait += gmtt.intWait;
@@ -256,6 +271,7 @@
               const tab = document.createElement('div');
               tab.id = `ct-${tabCfg.id}`;
               tab.className = `aKz customTab ${tabCfg.id == gmtt.selected ? ' ctSelected' : ''}`;
+
               let url = gmtt.baseUrl;
               if (/^[\w/]+$/.test(tabCfg.query)) {
                 url += `#${tabCfg.query}`;
@@ -265,13 +281,22 @@
                 url += `#search/${encodeURIComponent(tabCfg.query)}`
               }
               const anchor = document.createElement('a');
-              anchor.id = `ct-a-${tabCfg.id}`
+              anchor.id = `ct-a-${tabCfg.id}`;
               anchor.href = url;
               anchor.setAttribute('target', '_top');
               anchor.setAttribute('aria-label', tabCfg.label);
               anchor.setAttribute('tabindex', -1);
               anchor.setAttribute('draggable', false);
-              anchor.innerText = tabCfg.label;
+
+              const aIcon = document.createElement('div');
+              aIcon.className = 'customTabIcon';
+              aIcon.style.backgroundImage = `url('${tabCfg.icon}')`;
+              anchor.appendChild(aIcon);
+
+              const aLabel = document.createElement('div');
+              aLabel.innerText = tabCfg.label;
+              anchor.appendChild(aLabel);
+
               tab.appendChild(anchor);
               fragment.appendChild(tab);
             });
@@ -295,13 +320,13 @@
             collapseBtn.addEventListener('click', () => {
               if(gmtt.collapsed) {
                 collapseBtnBg.classList.remove('collapseBtnBgC');
-                collapseBtnBg.classList.add('collapseBtnBgU');
+                collapseBtnBg.classList.add('collapseBtnBgE');
                 gmtt.customTabBar.classList.remove('customTabsC');
-                gmtt.customTabBar.classList.add('customTabsU');
+                gmtt.customTabBar.classList.add('customTabsE');
               } else {
-                collapseBtnBg.classList.remove('collapseBtnBgU');
+                collapseBtnBg.classList.remove('collapseBtnBgE');
                 collapseBtnBg.classList.add('collapseBtnBgC');
-                gmtt.customTabBar.classList.remove('customTabsU');
+                gmtt.customTabBar.classList.remove('customTabsE');
                 gmtt.customTabBar.classList.add('customTabsC');
               }
               gmtt.collapsed = !gmtt.collapsed;
