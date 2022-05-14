@@ -314,9 +314,9 @@
             gmtt.customTabsContainer.appendChild(gmtt.customTabBar);
 
             const collapseBtn = document.createElement('div');
-            collapseBtn.className = 'Ij Yn collapseBtn';
+            collapseBtn.className = 'a5B Yn collapseBtn';
             const collapseBtnBg = document.createElement('span');
-            collapseBtnBg.className = 'Ik collapseBtnBg collapseBtnBgC';
+            collapseBtnBg.className = 'a5D collapseBtnBg collapseBtnBgC';
             collapseBtn.addEventListener('click', () => {
               if(gmtt.collapsed) {
                 collapseBtnBg.classList.remove('collapseBtnBgC');
