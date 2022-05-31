@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.6
+// @version      1.7
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -15,6 +15,7 @@
     #customTabsContainer {
       display: inline-block;
       width: 100%;
+      position: relative;
     }
     .displayNone {
       display: none !important;
@@ -25,6 +26,10 @@
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       border-bottom: 1px solid rgba(75,80,83);
       margin-bottom: 10px;
+    }
+    .customTabsSimp {
+      background-color: var(--color-themeAccent);
+      margin-bottom: 0 !important;
     }
     .customTabsC {
       height: 36px !important;
@@ -87,7 +92,13 @@
     selected: null,
     collapsed: true,
     resizeTimeout: false,
+    simplifyPresent: false,
     tabsConfig: [{ //Tabs configuration object
+      id: 'inbox',
+      query: 'inbox',
+      label: 'Inbox',
+      icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/inbox_white_20dp.png'
+    }, {
       id: 'starred',
       query: 'in:inbox is:starred',
       label: 'Starred',
@@ -95,7 +106,7 @@
     }, {
       id: 'regular',
       query: 'in:inbox -is:starred',
-      label: 'Regular Inbox',
+      label: 'Regular',
       icon: 'https://www.gstatic.com/images/icons/material/system_gm/1x/all_inbox_white_20dp.png'
     }, {
       id: 'security',
@@ -238,7 +249,19 @@
         }
       }
 
-      const tabParent = document.querySelector('.AO');
+      if (!gmtt.simplifyPresent) {
+        gmtt.simplifyPresent = !!document.querySelector('html.simplify');
+      }
+      let tabParent = false;
+      if (gmtt.simplifyPresent) {
+        Array.from(document.querySelectorAll('div.ae4.nH.oy8Mbf')).forEach(el => {
+          if (el.offsetParent) {
+            tabParent = el;
+          }
+        });
+      } else {
+        tabParent = document.querySelector('.AO');
+      }
       if (tabParent && document.querySelector('.vX.UC').offsetParent === null) {
         //console.log("*************** Tab Parent found");
         gmtt.totalWait = 0;
@@ -265,7 +288,7 @@
           } else {
             gmtt.customTabBar = document.createElement('div');
             gmtt.customTabBar.id = 'customTabBar';
-            gmtt.customTabBar.className = 'aKh aKx customTabs customTabsC';
+            gmtt.customTabBar.className = `${gmtt.simplifyPresent ? 'customTabsSimp' : 'aKh aKx'} customTabs customTabsC`;
             const fragment = document.createDocumentFragment();
             gmtt.tabsConfig.forEach(tabCfg => {
               const tab = document.createElement('div');
@@ -334,7 +357,8 @@
             });
             collapseBtn.appendChild(collapseBtnBg);
             gmtt.customTabsContainer.appendChild(collapseBtn);
-
+          }
+          if (!gmtt.customTabsContainer.parentNode || gmtt.customTabsContainer.parentNode != tabParent) {
             tabParent.prepend(gmtt.customTabsContainer);
           }
         }
