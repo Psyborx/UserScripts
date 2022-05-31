@@ -6,8 +6,8 @@
 // @author       Psyborx
 // @match        *://mail.google.com/*
 // @icon         https://www.google.com/s2/favicons?domain=google.com
-// @updateURL    https://raw.githubusercontent.com/Psyborx/UserScripts/main/Pop3CheckerFixes.js
-// @downloadURL  https://raw.githubusercontent.com/Psyborx/UserScripts/main/Pop3CheckerFixes.js
+// @updateURL    https://raw.githubusercontent.com/Psyborx/UserScripts/main/Pop3CheckerFixes.user.js
+// @downloadURL  https://raw.githubusercontent.com/Psyborx/UserScripts/main/Pop3CheckerFixes.user.js
 // ==/UserScript==
 
 (function() {
