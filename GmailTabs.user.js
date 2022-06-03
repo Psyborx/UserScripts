@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.7
+// @version      1.8
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -12,10 +12,19 @@
 
 (function() {
   const stylesheet = `
-    #customTabsContainer {
+    .customTabsContainer {
       display: inline-block;
       width: 100%;
       position: relative;
+    }
+    .customTabsContainerSimp {
+      display: block;
+      width: 100%;
+      position: relative;
+      top: 81px;
+      left: -8px;
+      max-width: min(var(--width-list),calc(100vw - 16px - var(--width-rightPane) - var(--width-nav)));
+      margin: 0px auto;
     }
     .displayNone {
       display: none !important;
@@ -253,12 +262,12 @@
         gmtt.simplifyPresent = !!document.querySelector('html.simplify');
       }
       let tabParent = false;
-      if (gmtt.simplifyPresent) {
-        Array.from(document.querySelectorAll('div.ae4.nH.oy8Mbf')).forEach(el => {
-          if (el.offsetParent) {
-            tabParent = el;
-          }
-        });
+      if (hash == 'inbox') {
+        tabParent = document.querySelector('div.BltHke.nH.oy8Mbf.aE3.S4 > div.aKh');
+        if (tabParent) {
+          tabParent.style.height = 'fit-content';
+          tabParent.querySelector('.aKk').style.height = 'auto';
+        }
       } else {
         tabParent = document.querySelector('.AO');
       }
@@ -333,7 +342,7 @@
           }
           if (!gmtt.customTabsContainer) {
             gmtt.customTabsContainer = document.createElement('div');
-            gmtt.customTabsContainer.id = 'customTabsContainer'
+            gmtt.customTabsContainer.id = 'customTabsContainer';
             gmtt.customTabsContainer.appendChild(gmtt.customTabBar);
 
             const collapseBtn = document.createElement('div');
@@ -357,6 +366,13 @@
             });
             collapseBtn.appendChild(collapseBtnBg);
             gmtt.customTabsContainer.appendChild(collapseBtn);
+          }
+          if (hash == 'inbox' || !gmtt.simplifyPresent) {
+            gmtt.customTabsContainer.classList.remove('customTabsContainerSimp');
+            gmtt.customTabsContainer.classList.add('customTabsContainer');
+          } else {
+            gmtt.customTabsContainer.classList.remove('customTabsContainer');
+            gmtt.customTabsContainer.classList.add('customTabsContainerSimp');
           }
           if (!gmtt.customTabsContainer.parentNode || gmtt.customTabsContainer.parentNode != tabParent) {
             tabParent.prepend(gmtt.customTabsContainer);
