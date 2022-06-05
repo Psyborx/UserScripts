@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.9
+// @version      1.10
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -11,31 +11,12 @@
 // ==/UserScript==
 
 (function() {
-  const html = document.querySelector('html');
   const matIconsUrl = 'https://www.gstatic.com/images/icons/material/system_gm/1x/';
   const stylesheet = `
     .customTabsContainer {
       display: inline-block;
       width: 100%;
       position: relative;
-    }
-    .customTabsContainerSimp {
-      display: block;
-      width: 100%;
-      position: relative;
-      left: -8px;
-      max-width: min(var(--width-list),calc(100vw - 16px - var(--width-rightPane) - var(--width-nav)));
-      margin: 0px auto;
-      z-index: 4;
-    }
-    .customTabsContainerSimpTop {
-      top: 55px;
-    }
-    .customTabsContainerSimpTopFilter {
-      top: 88px;
-    }
-    .customTabsContainerSimpTopAllSel {
-      top: 120px;
     }
     .displayNone {
       display: none !important;
@@ -46,10 +27,6 @@
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       border-bottom: 1px solid rgba(75,80,83);
       margin-bottom: 10px;
-    }
-    .customTabsSimp {
-      background-color: var(--color-themeAccent);
-      margin-bottom: 0 !important;
     }
     .customTabsC {
       height: 36px !important;
@@ -99,17 +76,6 @@
     .collapseBtnBgE {
       background-image: url('${matIconsUrl}keyboard_arrow_up_white_20dp.png');
     }
-    .allSelFilterBar {
-      top: 68px !important;
-    }
-    .selAllAcrossParent {
-      position: relative;
-      top: calc(-100vh + 130px);
-      left: -8px;
-      width: 100%;
-      max-width: min(var(--width-list),calc(100vw - 16px - var(--width-rightPane) - var(--width-nav)));
-      margin: 0px auto;
-    }
     `;
   document.head.insertAdjacentHTML('beforeend', `<style>${stylesheet}</style>`);
 
@@ -123,8 +89,6 @@
     selected: null,
     collapsed: true,
     resizeTimeout: false,
-    simplifyPresent: false,
-    allSelected: false,
     tabsConfig: [{ //Tabs configuration object
       id: 'inbox',
       query: 'inbox',
@@ -290,43 +254,6 @@
         }
       } else {
         tabParent = document.querySelector('.AO');
-        if (tabParent && gmtt.simplifyPresent) {
-          const filtBar = document.querySelector('.G6');
-          if (filtBar) {
-            const filtBarClasses = filtBar.classList;
-            if (gmtt.allSelected) {
-              if (!Array.from(filtBarClasses).includes('allSelFilterBar')) {
-                filtBarClasses.add('allSelFilterBar');
-              }
-            } else {
-              filtBarClasses.remove('allSelFilterBar');
-            }
-          }
-          let filler = document.getElementById('selAllFiller');
-          const main = document.querySelector('[role="main"]');
-          let selAllAcross = document.querySelector('.ya.yb') || document.querySelector('.ya.yc');
-          if (selAllAcross) {
-            const selAllAcrossParent = selAllAcross.parentNode;
-            if (selAllAcrossParent) {
-              if (!Array.from(selAllAcrossParent.classList).includes('selAllAcrossParent')) {
-                selAllAcrossParent.classList.add('selAllAcrossParent');
-              }
-              if (selAllAcrossParent.parentNode != tabParent) {
-                tabParent.append(selAllAcrossParent);
-              }
-              gmtt.selAllAcrossParentObserver.observe(tabParent, { childList: true });
-            }
-            if (!filler) {
-              filler = document.createElement('div');
-              filler.id = 'selAllFiller';
-              filler.style.height = '60px';
-              main.prepend(filler);
-            }
-          } else if (filler) {
-            filler.remove();
-            gmtt.selAllAcrossParentObserver.disconnect();
-          }
-        }
       }
       if (tabParent && document.querySelector('.vX.UC').offsetParent === null) {
         //console.log("*************** Tab Parent found");
@@ -354,7 +281,7 @@
           } else {
             gmtt.customTabBar = document.createElement('div');
             gmtt.customTabBar.id = 'customTabBar';
-            gmtt.customTabBar.className = `${gmtt.simplifyPresent ? 'customTabsSimp' : 'aKh aKx'} customTabs customTabsC`;
+            gmtt.customTabBar.className = 'aKh aKx customTabs customTabsC';
             const fragment = document.createDocumentFragment();
             gmtt.tabsConfig.forEach(tabCfg => {
               const tab = document.createElement('div');
@@ -424,30 +351,7 @@
             collapseBtn.append(collapseBtnBg);
             gmtt.customTabsContainer.append(collapseBtn);
           }
-          if (hash == 'inbox' || !gmtt.simplifyPresent) {
-            gmtt.customTabsContainer.classList.remove('customTabsContainerSimp');
-            gmtt.customTabsContainer.classList.remove('customTabsContainerSimpTop');
-            gmtt.customTabsContainer.classList.remove('customTabsContainerSimpTopFilter');
-            gmtt.customTabsContainer.classList.remove('customTabsContainerSimpTopAllSel');
-            gmtt.customTabsContainer.classList.add('customTabsContainer');
-          } else {
-            gmtt.customTabsContainer.classList.remove('customTabsContainer');
-            gmtt.customTabsContainer.classList.add('customTabsContainerSimp');
-            
-            const filterBar = Array.from(document.querySelectorAll('.G6'));
-            const filterBarPresent = filterBar.reduce((present, bar) => bar.offsetParent || present, false);
-            if (gmtt.allSelected) {
-              gmtt.customTabsContainer.classList.remove('customTabsContainerSimpTop');
-              gmtt.customTabsContainer.classList.add('customTabsContainerSimpTopAllSel');
-            } else {
-              gmtt.customTabsContainer.classList.remove('customTabsContainerSimpTopAllSel');
-              if (filterBarPresent) {
-                gmtt.customTabsContainer.classList.add('customTabsContainerSimpTopFilter');
-              } else {
-                gmtt.customTabsContainer.classList.add('customTabsContainerSimpTop');
-              }
-            }
-          }
+          gmtt.customTabsContainer.classList.add('customTabsContainer');
           if (!gmtt.customTabsContainer.parentNode || gmtt.customTabsContainer.parentNode != tabParent) {
             tabParent.prepend(gmtt.customTabsContainer);
           }
@@ -460,35 +364,7 @@
         console.error("*************** Tab Parent was never found and the future refused to change :-(");
       }
       return this;
-    },
-    htmlAttrObserver: new MutationObserver(mutationsList => {
-      mutationsList.forEach(mutation => {
-        if (mutation.type == 'attributes') {
-          const classes = Array.from(html.classList);
-  
-          const simplifyPresent = classes.includes('simplify');
-          if (simplifyPresent != gmtt.simplifyPresent) {
-            gmtt.simplifyPresent = simplifyPresent;
-            gmtt.init();
-          }
-  
-          const allSelected = classes.includes('allSelected');
-          if (allSelected != gmtt.allSelected) {
-            gmtt.allSelected = allSelected;
-            gmtt.init();
-          }
-        }
-      });
-    }),
-    selAllAcrossParentObserver: new MutationObserver(mutationsList => {
-      mutationsList.forEach(mutation => {
-        if (mutation.type == 'childList' && mutation?.removedNodes?.length && Array.from(mutation.removedNodes[0].classList).includes('selAllAcrossParent')) {
-          gmtt.init();
-        }
-      });
-    })
+    }
   };
-
-  gmtt.htmlAttrObserver.observe(html, { attributes: true });
   gmtt.init();
 })();
