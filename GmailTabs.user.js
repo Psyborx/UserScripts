@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.10
+// @version      1.11
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -12,11 +12,14 @@
 
 (function() {
   const matIconsUrl = 'https://www.gstatic.com/images/icons/material/system_gm/1x/';
+  const isrefinementParam = '&isrefinement=true';
   const stylesheet = `
     .customTabsContainer {
       display: inline-block;
-      width: 100%;
+      width: calc(100% - 40px);
       position: relative;
+      padding-right: 44px;
+      border-bottom: 1px solid rgba(182,182,182);
     }
     .displayNone {
       display: none !important;
@@ -25,7 +28,6 @@
       width: 100%;
       display: grid !important;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      border-bottom: 1px solid rgba(75,80,83);
       margin-bottom: 10px;
     }
     .customTabsC {
@@ -62,7 +64,7 @@
     }
     .collapseBtn {
       z-index: 5;
-      margin-right: 10px;
+      margin-right: 1px;
       margin-top: 5px;
     }
     .collapseBtnBg {
@@ -151,7 +153,7 @@
       icon: `${matIconsUrl}lan_white_20dp.png`
     }, {
       id: 'social',
-      query: 'in:inbox category:social',
+      query: 'in:inbox {category:social label:social}',
       label: 'Social',
       icon: `${matIconsUrl}people_white_20dp.png`
     }, {
@@ -166,7 +168,7 @@
       icon: `${matIconsUrl}local_offer_white_20dp.png`
     }, {
       id: 'recentCalls',
-      query: 'label:(-phone phone-call-log)',
+      query: 'label:(-phone {phone-call-log phone-google-voice})',
       label: 'Recent Calls',
       icon: `${matIconsUrl}phone_in_talk_white_20dp.png`
     }, {
@@ -181,7 +183,7 @@
       icon: `${matIconsUrl}attachment_white_20dp.png`
     }, {
       id: 'documents',
-      query: '{from:docusign.net "docs.google.com" has:document has:pdf filename:{doc docx odt fodt pages pages-tef xls xlsx ods fods numbers numbers-tef ppt pptx pps ppsx odp fodp key keynote key-tef pdf ps}}',
+      query: '{from:docusign.net "docs.google.com" has:document has:pdf filename:{txt rtf doc docx odt fodt pages pages-tef xls xlsx ods fods numbers numbers-tef ppt pptx pps ppsx odp fodp key keynote key-tef pdf ps epub mobi azw azw3 kfx kpf cbz cbr}}',
       label: 'Documents',
       icon: `${matIconsUrl}description_white_20dp.png`
     }, {
@@ -200,7 +202,7 @@
     },
     updateHeight: () => {
       const customTabsContainerHeight = getComputedStyle(document.getElementById('customTabsContainer')).height;
-      document.querySelectorAll('.S4').forEach(el => { el.style.height = `calc(100vh - 64px - 16px - ${customTabsContainerHeight})` });
+      document.querySelectorAll('.S4').forEach(el => { el.style.height = `calc(100vh - 64px - 16px - ${customTabsContainerHeight})`; });
     },
     init: () => {
       gmtt.totalWait += gmtt.intWait;
@@ -230,10 +232,12 @@
           query = hash.slice(0, 2).join('/');
           break;
         case 'search':
-        case 'advanced-search':
+        case 'advanced-search': {
           display = gmtt.shouldDisplay(hash, 2);
-          query = decodeURIComponent(hash[1]).replace(/(&isrefinement=true)$/, '').replace(/[\u002B]/g, ' ');
+          const isrefinementRegexp = new RegExp(`(${isrefinementParam})$`);
+          query = decodeURIComponent(hash[1]).replace(isrefinementRegexp, '').replace(/[\u002B]/g, ' ');
           break;
+        }
       }
 
       if (display) {
@@ -256,7 +260,7 @@
         tabParent = document.querySelector('.AO');
       }
       if (tabParent && document.querySelector('.vX.UC').offsetParent === null) {
-        //console.log("*************** Tab Parent found");
+        //console.log('*************** Tab Parent found');
         gmtt.totalWait = 0;
         if (!display) {
           if (gmtt.customTabsContainer && !gmtt.customTabsContainer.classList.contains('displayNone')) {
@@ -292,9 +296,9 @@
               if (/^[\w/]+$/.test(tabCfg.query)) {
                 url += `#${tabCfg.query}`;
               } else if (/(&|=)/.test(tabCfg.query)) {
-                url += `#advanced-search/${encodeURIComponent(tabCfg.query)}&isrefinement=true`
+                url += `#advanced-search/${encodeURIComponent(tabCfg.query)}${isrefinementParam}`;
               } else {
-                url += `#search/${encodeURIComponent(tabCfg.query)}`
+                url += `#search/${encodeURIComponent(tabCfg.query)}`;
               }
               const anchor = document.createElement('a');
               anchor.id = `ct-a-${tabCfg.id}`;
@@ -358,10 +362,10 @@
         }
         gmtt.updateHeight();
       } else if (gmtt.totalWait < gmtt.maxWait) {
-        //console.warn("*************** Tab Parent not found yet");
+        //console.warn('*************** Tab Parent not found yet');
         window.setTimeout(gmtt.init, gmtt.intWait);
       } else {
-        console.error("*************** Tab Parent was never found and the future refused to change :-(");
+        console.error('*************** Tab Parent was never found and the future refused to change :-(');
       }
       return this;
     }

@@ -31,10 +31,10 @@
         pop3ChckDiv.style.position = 'absolute';
         pop3ChckDiv.style.bottom = '0';
       } else if (p3cf.totalWait < p3cf.maxWait) {
-        //console.warn("*************** Pop3 checker not found yet");
+        //console.warn('*************** Pop3 checker not found yet');
         window.setTimeout(p3cf.init, p3cf.intWait);
       } else {
-        console.error("*************** Pop3 checker was never found");
+        console.error('*************** Pop3 checker was never found');
       }
       return this;
     }
