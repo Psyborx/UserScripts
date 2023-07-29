@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.11
+// @version      1.12
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -251,7 +251,7 @@
 
       let tabParent = false;
       if (hash == 'inbox') {
-        tabParent = document.querySelector('div.BltHke.nH.oy8Mbf.aE3.S4 > div.aKh');
+        tabParent = document.querySelector('div.bGI.nH.oy8Mbf.aE3.S4 > div.aKh');
         if (tabParent) {
           tabParent.style.height = 'fit-content';
           tabParent.querySelector('.aKk').style.height = 'auto';
