@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.12
+// @version      1.13
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -142,9 +142,9 @@
       label: 'Recruitment',
       icon: `${matIconsUrl}work_white_20dp.png`
     }, {
-      id: 'patreon',
-      query: 'in:inbox label:patreon',
-      label: 'Patreon',
+      id: 'creatorSupport',
+      query: 'in:inbox label:creatorsupport',
+      label: 'Creator$',
       icon: `${matIconsUrl}toll_white_20dp.png`
     }, {
       id: 'networkAlerts',
