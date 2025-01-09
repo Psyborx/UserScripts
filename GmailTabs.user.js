@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.14
+// @version      1.15
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -168,7 +168,7 @@
       icon: `${matIconsUrl}local_offer_white_20dp.png`
     }, {
       id: 'hotmail',
-      query: 'in:inbox to:(psyborx {hotmail.com live.com outlook.com}) -label:email-hotmail',
+      query: 'in:anywhere to:(psyborx@{hotmail.com live.com outlook.com}) -label:email-hotmail',
       label: 'Hotmail',
       icon: `${matIconsUrl}alternate_email_white_20dp.png`
     }, {
