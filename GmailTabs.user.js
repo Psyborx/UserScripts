@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.15
+// @version      1.16
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/*
@@ -108,62 +108,62 @@
       icon: `${matIconsUrl}all_inbox_white_20dp.png`
     }, {
       id: 'security',
-      query: 'in:inbox label:security',
+      query: 'in:inbox -is:starred label:security',
       label: 'Security',
       icon: `${matIconsUrl}security_white_20dp.png`
     }, {
       id: 'alerts',
-      query: 'in:inbox label:alerts',
+      query: 'in:inbox -is:starred label:alerts',
       label: 'Alerts',
       icon: `${matIconsUrl}warning_amber_white_20dp.png`
     }, {
       id: 'apartment',
-      query: 'in:inbox label:apartment',
+      query: 'in:inbox -is:starred label:apartment',
       label: 'Apartment',
       icon: `${matIconsUrl}apartment_white_20dp.png`
     }, {
       id: 'finance',
-      query: 'in:inbox label:finance',
+      query: 'in:inbox -is:starred label:finance',
       label: 'Finance',
       icon: `${matIconsUrl}account_balance_white_20dp.png`
     }, {
       id: 'purchases',
-      query: 'in:inbox label:purchases',
+      query: 'in:inbox -is:starred label:purchases',
       label: 'Purchases',
       icon: `${matIconsUrl}shopping_cart_white_20dp.png`
     }, {
       id: 'shipping',
-      query: 'in:inbox label:shipping',
+      query: 'in:inbox -is:starred label:shipping',
       label: 'Shipping',
       icon: `${matIconsUrl}local_shipping_white_20dp.png`
     }, {
       id: 'recruitment',
-      query: 'in:inbox label:recruitment',
+      query: 'in:inbox -is:starred label:recruitment',
       label: 'Recruitment',
       icon: `${matIconsUrl}work_white_20dp.png`
     }, {
       id: 'creatorSupport',
-      query: 'in:inbox label:creatorsupport',
+      query: 'in:inbox -is:starred label:creatorsupport',
       label: 'Creator$',
       icon: `${matIconsUrl}toll_white_20dp.png`
     }, {
       id: 'networkAlerts',
-      query: 'in:inbox label:network-alerts',
+      query: 'in:inbox -is:starred label:network-alerts',
       label: 'Network Alerts',
       icon: `${matIconsUrl}lan_white_20dp.png`
     }, {
       id: 'social',
-      query: 'in:inbox {category:social label:social}',
+      query: 'in:inbox -is:starred {category:social label:social}',
       label: 'Social',
       icon: `${matIconsUrl}people_white_20dp.png`
     }, {
       id: 'forums',
-      query: 'in:inbox category:forums',
+      query: 'in:inbox -is:starred category:forums',
       label: 'Forums',
       icon: `${matIconsUrl}forum_white_20dp.png`
     }, {
       id: 'promotions',
-      query: 'in:inbox category:promotions',
+      query: 'in:inbox -is:starred category:promotions',
       label: 'Promotions',
       icon: `${matIconsUrl}local_offer_white_20dp.png`
     }, {
