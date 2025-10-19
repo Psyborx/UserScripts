@@ -1,16 +1,20 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.16
+// @version      1.17
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
-// @match        *://mail.google.com/*
+// @match        *://mail.google.com/mail/u/0/*
 // @icon         https://www.google.com/s2/favicons?domain=google.com
 // @updateURL    https://raw.githubusercontent.com/Psyborx/UserScripts/main/GmailTabs.user.js
 // @downloadURL  https://raw.githubusercontent.com/Psyborx/UserScripts/main/GmailTabs.user.js
+// @grant        GM_addStyle
+// @grant        GM_addElement
+// @grant        window.onurlchange
 // ==/UserScript==
 
 (function() {
+  // console.log('*************** Gmail Tabs script started');
   const matIconsUrl = 'https://www.gstatic.com/images/icons/material/system_gm/1x/';
   const isrefinementParam = '&isrefinement=true';
   const stylesheet = `
@@ -79,7 +83,7 @@
       background-image: url('${matIconsUrl}keyboard_arrow_up_white_20dp.png');
     }
     `;
-  document.head.insertAdjacentHTML('beforeend', `<style>${stylesheet}</style>`);
+  GM_addStyle(stylesheet);
 
   const gmtt = {
     intWait: 250,
@@ -212,9 +216,11 @@
     init: () => {
       gmtt.totalWait += gmtt.intWait;
       gmtt.baseUrl = document.location.origin + document.location.pathname;
+      // console.log('*************** document.location: ', document.location);
       let display = true;
       let query = document.location.hash.replace('#', '');
       const hash = query.split('/');
+      // console.log('*************** Current hash: ', hash);
 
       switch (hash[0]) {
         case 'settings':
@@ -255,7 +261,7 @@
       }
 
       let tabParent = false;
-      if (hash == 'inbox') {
+      if (hash[0] == 'inbox') {
         tabParent = document.querySelector('div.bGI.nH.oy8Mbf.aE3.S4 > div.aKh');
         if (tabParent) {
           tabParent.style.height = 'fit-content';
@@ -264,8 +270,9 @@
       } else {
         tabParent = document.querySelector('.AO');
       }
+      // console.log('*************** Current Tab Parent: ', tabParent);
       if (tabParent && document.querySelector('.vX.UC').offsetParent === null) {
-        //console.log('*************** Tab Parent found');
+        // console.log('*************** Tab Parent found');
         gmtt.totalWait = 0;
         if (!display) {
           if (gmtt.customTabsContainer && !gmtt.customTabsContainer.classList.contains('displayNone')) {
@@ -367,10 +374,10 @@
         }
         gmtt.updateHeight();
       } else if (gmtt.totalWait < gmtt.maxWait) {
-        //console.warn('*************** Tab Parent not found yet');
+        // console.warn('*************** Tab Parent not found yet');
         window.setTimeout(gmtt.init, gmtt.intWait);
       } else {
-        console.error('*************** Tab Parent was never found and the future refused to change :-(');
+        // console.error('*************** Tab Parent was never found and the future refused to change :-(');
       }
       return this;
     }
