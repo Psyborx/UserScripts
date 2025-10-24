@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.18
+// @version      1.19
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/mail/u/0/*
@@ -185,6 +185,11 @@
       query: 'label:({-im -phone} {phone-sms phone-mms})',
       label: 'Recent SMS',
       icon: `${matIconsUrl}sms_white_20dp.png`
+    }, {
+      id: 'social',
+      query: 'label/IM',
+      label: 'IM',
+      icon: `${matIconsUrl}chat_white_20dp.png`
     }, {
       id: 'attachment',
       query: '{has:attachment has:drive}',
