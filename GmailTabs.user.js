@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.19
+// @version      1.20
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/mail/u/0/*
@@ -9,8 +9,6 @@
 // @updateURL    https://raw.githubusercontent.com/Psyborx/UserScripts/main/GmailTabs.user.js
 // @downloadURL  https://raw.githubusercontent.com/Psyborx/UserScripts/main/GmailTabs.user.js
 // @grant        GM_addStyle
-// @grant        GM_addElement
-// @grant        window.onurlchange
 // ==/UserScript==
 
 (function() {
@@ -186,7 +184,7 @@
       label: 'Recent SMS',
       icon: `${matIconsUrl}sms_white_20dp.png`
     }, {
-      id: 'social',
+      id: 'im',
       query: 'label/IM',
       label: 'IM',
       icon: `${matIconsUrl}chat_white_20dp.png`
