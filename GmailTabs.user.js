@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gmail Tabs
 // @namespace    http://psyborx.com/
-// @version      1.19
+// @version      1.21
 // @description  Add custom tabs to Gmail
 // @author       Psyborx
 // @match        *://mail.google.com/mail/u/0/*
@@ -9,8 +9,6 @@
 // @updateURL    https://raw.githubusercontent.com/Psyborx/UserScripts/main/GmailTabs.user.js
 // @downloadURL  https://raw.githubusercontent.com/Psyborx/UserScripts/main/GmailTabs.user.js
 // @grant        GM_addStyle
-// @grant        GM_addElement
-// @grant        window.onurlchange
 // ==/UserScript==
 
 (function() {
@@ -61,6 +59,10 @@
       color: rgba(255,255,255,0.70);
       text-decoration: none;
     }
+    .customTab:hover > a,
+    .ctSelected > a {
+      color: #ffffff;
+    }
     .customTabIcon {
       background-position: center;
       background-repeat: no-repeat;
@@ -70,17 +72,25 @@
       z-index: 5;
       margin-right: 1px;
       margin-top: 5px;
+      cursor: pointer;
+      transition: transform 0.3s ease, opacity 0.2s ease;
+    }
+    .collapseBtn:hover {
+      opacity: 1;
+      transform: scale(1.05);
     }
     .collapseBtnBg {
       background-position: center;
       background-repeat: no-repeat;
       background-size: 20px;
+      transition: transform 0.2s ease-in-out;
     }
-    .collapseBtnBgC {
+    .collapseBtnBgC,
+    .collapseBtnBgE {
       background-image: url('${matIconsUrl}keyboard_arrow_down_white_20dp.png');
     }
     .collapseBtnBgE {
-      background-image: url('${matIconsUrl}keyboard_arrow_up_white_20dp.png');
+      transform: rotate(180deg);
     }
     `;
   GM_addStyle(stylesheet);
@@ -186,7 +196,7 @@
       label: 'Recent SMS',
       icon: `${matIconsUrl}sms_white_20dp.png`
     }, {
-      id: 'social',
+      id: 'im',
       query: 'label/IM',
       label: 'IM',
       icon: `${matIconsUrl}chat_white_20dp.png`
